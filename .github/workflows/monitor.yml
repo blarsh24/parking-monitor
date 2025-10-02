@@ -60,7 +60,7 @@ jobs:
     
     # Download previous state (if exists)
     - name: Download previous state artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4  # ← CHANGED FROM v3 to v4
       with:
         name: parking-state
         path: data/
@@ -77,7 +77,7 @@ jobs:
     # Upload state as artifact for next run
     - name: Upload state artifact
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # ← CHANGED FROM v3 to v4
       with:
         name: parking-state
         path: data/last_state.json
