@@ -276,15 +276,25 @@ class ParkingMonitor:
         
         # Check if status changed from sold_out to available
         status_changed = False
+        
+        status_changed = False
         if previous_state:
             prev_status = previous_state.get('status')
             curr_status = current_data['status']
             
             logger.info(f"Previous status: {prev_status}, Current status: {curr_status}")
             
-            if prev_status == 'sold_out' and curr_status == 'available':
+            # Notify if: was sold_out AND now is anything except sold_out
+            if prev_status == 'sold_out' and curr_status != 'sold_out':
                 status_changed = True
-                logger.info("🎉 PARKING IS NOW AVAILABLE!")
+                logger.info(f"🎉 PARKING STATUS CHANGED! Now: {curr_status}")
+            
+            # Also notify if status is anything except sold_out (catches edge cases)
+            elif curr_status != 'sold_out' and curr_status != 'unknown':
+                status_changed = True
+                logger.info(f"🎉 PARKING MAY BE AVAILABLE! Status: {curr_status}")
+    
+        
         else:
             # First run
             logger.info("First run - initializing state")
@@ -294,15 +304,24 @@ class ParkingMonitor:
         
         # Send notification if status changed to available
         if status_changed:
+            # Determine the message based on status
+            if current_data['status'] == 'available':
+                status_text = "✅ AVAILABLE"
+            elif current_data['status'] == 'unknown':
+                status_text = "❓ UNKNOWN (Check manually!)"
+            else:
+                status_text = f"✅ {current_data['status'].upper()}"
+            
             await send_discord_notification(
                 webhook_url=self.discord_webhook_url,
-                title="🚗 PARKING AVAILABLE!",
+                title="🚗 PARKING ALERT!",
                 description=current_data['name'],
                 color=0x00FF00,
                 fields=[
                     {"name": "Price", "value": current_data.get('price', 'N/A'), "inline": True},
-                    {"name": "Status", "value": "✅ AVAILABLE", "inline": True},
+                    {"name": "Status", "value": status_text, "inline": True},
                     {"name": "Previous Status", "value": "❌ Sold Out", "inline": True},
+                    {"name": "Action", "value": "⚡ CHECK NOW!", "inline": False},
                 ],
                 url=self.url,
                 timestamp=current_data['timestamp']
