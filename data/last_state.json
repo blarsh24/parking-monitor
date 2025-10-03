@@ -1,9 +1,16 @@
-﻿{
+{
   "name": "Samuel Merritt University Fall 2025 Parking",
   "status": "sold_out",
   "price": "$67.45",
+<<<<<<< HEAD
   "timestamp": "2025-10-02T08:37:42.182498",
   "has_button": false,
   "last_check": "2025-10-02T08:37:42.224191",
+=======
+  "url": "https://space.aceparking.com/site/reserve/4fac9ba115140ac4f1c22da82aa0bc7f",
+  "timestamp": "2025-10-03T03:54:28.358892",
+  "has_button": false,
+  "last_check": "2025-10-03T03:54:28.400905",
+>>>>>>> 8ba1991910ec5bd81ad84198e8ab425c8690fa9f
   "error_count": 0
 }
