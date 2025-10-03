@@ -282,7 +282,7 @@ class ParkingMonitor:
             
             logger.info(f"Previous status: {prev_status}, Current status: {curr_status}")
             
-            if prev_status == 'sold_out' and curr_status == 'available':
+            if prev_status == 'sold_out' != curr_status:
                 status_changed = True
                 logger.info("🎉 PARKING IS NOW AVAILABLE!")
         else:
