@@ -1,9 +1,9 @@
 ﻿{
   "name": "Samuel Merritt University Fall 2025 Parking",
-  "status": "available",
+  "status": "sold_out",
   "price": "$67.45",
   "timestamp": "2025-10-02T08:37:42.182498",
-  "has_button": true,
+  "has_button": false,
   "last_check": "2025-10-02T08:37:42.224191",
   "error_count": 0
 }
