@@ -14,7 +14,7 @@ on:
         type: boolean
         default: false
 
-# Permissions for artifact upload and repo write
+# Permissions for repo write
 permissions:
   contents: write
   actions: write
@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 10
     
     steps:
-    # Checkout repository
+    # Checkout repository - this gets the latest state file
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
@@ -82,14 +82,6 @@ jobs:
         # Now install Playwright browsers
         playwright install chromium
     
-    # Download previous state (if exists)
-    - name: Download previous state artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: parking-state
-        path: data/
-      continue-on-error: true
-    
     # Run the parking monitor
     - name: Check parking availability
       env:
@@ -98,30 +90,23 @@ jobs:
       run: |
         python -m src.scraper
     
-    # Upload state as artifact for next run
-    - name: Upload state artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: parking-state
-        path: data/last_state.json
-        retention-days: 1
-    
-    # Commit state back to repo (alternative persistence method)
+    # Commit state back to repo - THIS is what persists the state
     - name: Commit state changes
       if: always()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add data/last_state.json || true
+        git add data/check_history.* || true
         git diff --quiet && git diff --staged --quiet || git commit -m "Update parking state [skip ci]"
         git push || true
       continue-on-error: true
     
-    # Log results
+    # Log results on failure
     - name: Check logs
       if: failure()
       run: |
         echo "Monitor failed. Check logs above for details."
         ls -la data/ || true
         cat data/last_state.json || true
+        cat data/check_history.txt || true
