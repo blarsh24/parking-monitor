@@ -12,6 +12,7 @@ import sys
 import os
 import re
 from dotenv import load_dotenv  # ← ADD THIS LINE
+from src.check_logger import CheckLogger
 
 # Load environment variables from .env file
 load_dotenv()  # ← ADD THIS LINE
@@ -37,6 +38,7 @@ class ParkingMonitor:
         self.target_name = target_name
         self.state_manager = StateManager()
         self.discord_webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+        self.check_logger = CheckLogger()
         
     async def scrape_parking_status(self) -> Tuple[bool, Optional[Dict]]:
         """
@@ -329,6 +331,25 @@ class ParkingMonitor:
             logger.info("Discord notification sent successfully!")
         else:
             logger.info(f"No status change. Current status: {current_data['status']}")
+
+        print("\n" + "="*50)
+        print("PARKING CHECK SUMMARY")
+        print("="*50)
+        print(f"Time: {datetime.now()}")
+        print(f"Status: {current_data['status']}")
+        print(f"Price: {current_data.get('price', 'N/A')}")
+        print(f"Notification Sent: {status_changed}")
+        print(f"Webhook URL Set: {self.discord_webhook_url is not None}")
+        
+        # Show recent history (if you added the check_logger)
+        if hasattr(self, 'check_logger'):
+            recent = self.check_logger.get_recent_checks(5)
+            if recent:
+                print("\nLast 5 checks:")
+                for check in recent:
+                    print(f"  - {check['human_time']}: {check['status']} {'📨' if check['notification_sent'] else ''}")
+        
+        print("="*50 + "\n")
 
 async def main():
     """Main entry point"""
