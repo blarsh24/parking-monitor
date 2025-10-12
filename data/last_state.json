@@ -3,9 +3,8 @@
   "status": "sold_out",
   "price": "$67.45",
   "url": "https://space.aceparking.com/site/reserve/4fac9ba115140ac4f1c22da82aa0bc7f",
-  "timestamp": "2025-10-12T23:45:44.685831",
+  "timestamp": "2025-10-12T23:59:16.006202",
   "has_button": false,
-  "last_check": "2025-10-12T23:45:44.726245",
-  "error_count": 1,
-  "last_error": "2025-10-12T23:52:59.644629"
+  "last_check": "2025-10-12T23:59:16.046163",
+  "error_count": 0
 }
